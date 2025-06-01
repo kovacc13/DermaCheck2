@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dermatologie Lernkarten</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+        }
+        .flashcard {
+            background-color: white;
+            border-radius: 12px; /* More rounded corners */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Softer shadow */
+            margin-bottom: 20px;
+            transition: all 0.3s ease-in-out;
+        }
+        .flashcard-question {
+            padding: 20px;
+            font-weight: 600;
+            font-size: 1.1rem; /* Slightly larger question text */
+            color: #1e3a8a; /* Dark blue for questions */
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e5e7eb; /* Separator line */
+        }
+        .flashcard-question.open {
+             border-bottom: 1px solid #93c5fd; /* Blue separator when open */
+        }
+        .flashcard-answer {
+            padding: 0 20px; /* Padding only left/right initially */
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
+            font-size: 0.95rem;
+            color: #374151; /* Dark gray for answers */
+            line-height: 1.6;
+        }
+        .flashcard-answer.open {
+            padding: 20px; /* Full padding when open */
+            max-height: 1000px; /* Large enough to show content */
+        }
+        .arrow {
+            transition: transform 0.3s ease-in-out;
+            color: #3b82f6; /* Blue arrow */
+        }
+        .arrow.open {
+            transform: rotate(90deg);
+        }
+        .footer-text {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="container mx-auto max-w-3xl">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-blue-700">Dermatologie Lernkarten</h1>
+            <p class="text-lg text-gray-600 mt-2">Ihr Helfer für die Kosmetikprüfung</p>
+        </header>
+
+        <div id="flashcard-container">
+            </div>
+
+        <footer class="text-center mt-12 py-6 border-t border-gray-300">
+            <p class="footer-text">BKM Akademie - Viel Erfolg bei Ihrer Prüfung!</p>
+            <p class="footer-text">&copy; 2024 Lernkarten App</p>
+        </footer>
+    </div>
+
+    <script>
+        const flashcardsData = [
+            {
+                question: "Nennen Sie die fünf Schichten der Epidermis (Deutsch und Latein)!",
+                answer: "<ul><li>Basalzellenschicht - Stratum basale</li><li>Stachelzellenschicht - Stratum spinosum</li><li>Körnerzellenschicht - Stratum granulosum</li><li>Leucht- oder Glanzschicht - Stratum lucidum (nur Fusssohlen und Handfläche)</li><li>Hornschicht - Stratum corneum</li></ul>"
+            },
+            {
+                question: "Erklären Sie den Weg eines Keratinozytens!",
+                answer: "Keratinozyten (90% der Epidermiszellen) erneuern sich in ca. einem Monat. <br><b>Weg:</b><br>1. <b>Stratum basale:</b> Entstehung durch Zellteilung.<br>2. <b>Stratum spinosum:</b> Synthese von Lipiden (Odland-Bodies) für Wasserschutz und Proteinen/Fetten für den Zellzusammenhalt.<br>3. <b>Stratum granulosum:</b> Abbau von Zellorganellen, Bildung von Keratohyalingranula, Beginn der Verhornung. Odland-Bodies entleeren ihren Inhalt (Barrierelipide).<br>4. <b>Stratum lucidum</b> (nur an Leistenhaut): Übergangsschicht.<br>5. <b>Stratum corneum:</b> Besteht aus abgestorbenen, verhornten Zellen (Korneozyten), die eine schützende Hornschicht bilden. Dient als Barriere gegen Wasserverlust, physikalische und chemische Noxen."
+            },
+            {
+                question: "Beschreiben Sie Lage und Funktion der Melanozyten!",
+                answer: "<b>Lage:</b> In der Basalzellenschicht (Stratum basale) der Epidermis.<br><b>Funktion:</b> Produzieren das Pigment Melanin in speziellen Organellen, den Melanosomen. Melanin ist verantwortlich für die Haut- und Haarfarbe und bietet Schutz vor UV-Strahlung. Die Melanosomen werden an die umliegenden Keratinozyten abgegeben."
+            },
+            {
+                question: "Was ist die Basalmembran und ihre Rolle bei Verletzung/Hautkrebs?",
+                answer: "Die Basalmembran ist eine dünne Schicht, die die Epidermis von der Dermis trennt.<br><b>Rolle bei Verletzung/Wundheilung:</b> Ihre Intaktheit ist entscheidend für eine vollständige, narbenfreie Heilung. Bei Zerstörung der Basalmembran entsteht eine Narbe.<br><b>Rolle bei Hautkrebs:</b> Ein maligner (bösartiger) Tumor muss die Basalmembran durchbrechen, um invasiv in tiefere Hautschichten zu wachsen und Metastasen (Tochtergeschwülste) bilden zu können."
+            },
+            {
+                question: "Nennen Sie wichtige Aufgaben der Haut!",
+                answer: "<ul><li><b>Schutzfunktion:</b> Vor physikalischen Einflüssen (UV-Strahlung, Druck, Reibung), chemischen Substanzen und biologischen Noxen (Bakterien, Viren, Pilze).</li><li><b>Thermoregulation:</b> Aufrechterhaltung der Körpertemperatur durch Schwitzen und Verengung/Erweiterung der Blutgefäße.</li><li><b>Sinneswahrnehmung:</b> Aufnahme von Reizen wie Berührung, Druck, Schmerz, Temperatur.</li><li><b>Stoffwechsel und Speicher:</b> Produktion von Vitamin D3 unter Sonneneinstrahlung, Speicherung von Fett und Wasser.</li><li><b>Immunabwehr:</b> Enthält Zellen des Immunsystems (z.B. Langerhans-Zellen).</li><li><b>Kommunikation und Repräsentation:</b> Aussehen, Geruch.</li><li><b>Ausscheidungsfunktion:</b> Über Schweiß werden geringe Mengen an Stoffwechselprodukten ausgeschieden.</li></ul>"
+            },
+            {
+                question: "Woraus besteht der Säureschutzmantel der Haut?",
+                answer: "Der Säureschutzmantel ist ein Hydrolipidfilm auf der Hautoberfläche mit einem leicht sauren pH-Wert (ca. 4,5 - 5,5).<br><b>Bestandteile:</b><br><ul><li><b>Schweiß:</b> Wasser, Salze, Milchsäure, Harnstoff, Aminosäuren.</li><li><b>Talg:</b> Lipide wie Triglyceride, Fettsäuren, Wachsester, Squalen.</li><li><b>Abbauprodukte des Verhornungsprozesses:</b> z.B. freie Aminosäuren (NMF - Natural Moisturizing Factors).</li></ul>Er wirkt keimabwehrend und schützt die Haut vor Austrocknung."
+            },
+            {
+                question: "Wie heißen die beiden Schichten der Dermis und deren Aufgabe?",
+                answer: "1. <b>Stratum papillare (Papillarschicht):</b> Die obere, an die Epidermis grenzende Schicht. Enthält lockeres Bindegewebe, Blutkapillaren zur Versorgung der Epidermis, Nervenendigungen und Meissner-Tastkörperchen. Ihre zapfenartigen Ausstülpungen (Papillen) verzahnen sich mit der Epidermis.<br>2. <b>Stratum reticulare (Netzschicht):</b> Die untere, dickere Schicht. Besteht aus straffem Bindegewebe mit Kollagen- und elastischen Fasern, die der Haut Reißfestigkeit und Elastizität verleihen. Enthält Blutgefäße, Lymphgefäße, Nerven, Haarwurzeln, Talg- und Schweißdrüsen."
+            },
+            {
+                question: "Welche drei Pigmente bestimmen die Hautfarbe?",
+                answer: "1. <b>Melanin:</b> Das Hauptpigment, produziert von Melanozyten. Gibt es in zwei Formen (Eumelanin: braun-schwarz; Phäomelanin: rot-gelb). Schützt vor UV-Strahlung.<br>2. <b>Carotinoide:</b> Gelb-orange Pigmente, die über die Nahrung aufgenommen werden (z.B. Karotten) und sich im Fettgewebe und Stratum corneum anreichern können.<br>3. <b>Hämoglobin:</b> Der rote Blutfarbstoff in den Blutgefäßen der Dermis. Der Oxygenierungsgrad (sauerstoffreich vs. sauerstoffarm) beeinflusst den Farbton (rosig vs. bläulich)."
+            },
+            {
+                question: "Definieren Sie die Seborrhoe!",
+                answer: "Seborrhoe bezeichnet eine übermäßige Produktion von Talg durch die Talgdrüsen. Dies führt zu fettiger Haut und Haaren. Man unterscheidet:<br><ul><li><b>Seborrhoea oleosa:</b> fettig-ölige Haut mit erweiterten Poren.</li><li><b>Seborrhoea sicca:</b> fettige, aber gleichzeitig schuppige und oft gerötete Haut, da der Wasserhaushalt gestört ist.</li></ul>Seborrhoe kann ein Faktor bei der Entstehung von Akne sein."
+            },
+            {
+                question: "Nennen Sie die Hautanhangsgebilde und ihre Funktion!",
+                answer: "<ul><li><b>Haare:</b> Schutz (z.B. Kopfhaar vor Sonne, Wimpern vor Fremdkörpern), Wärmeisolation, Tastempfindung, soziale Funktion.</li><li><b>Nägel:</b> Schutz der Finger- und Zehenenden, Hilfsmittel beim Greifen und Tasten.</li><li><b>Talgdrüsen:</b> Produzieren Talg, der die Haut und Haare geschmeidig hält und Teil des Säureschutzmantels ist.</li><li><b>Schweißdrüsen:</b><br>  - <i>Ekkrine Schweißdrüsen:</i> Thermoregulation durch Verdunstungskälte, Ausscheidung, Säureschutzmantel.<br>  - <i>Apokrine Schweißdrüsen (Duftdrüsen):</i> Produzieren ein individuelles Duftsekret, das durch Bakterien zersetzt wird.</li></ul>"
+            },
+            {
+                question: "Wie heißen die Primäreffloreszenzen? (Nennen Sie 3-4)",
+                answer: "Primäreffloreszenzen entstehen direkt auf gesunder Haut. Beispiele:<br><ul><li><b>Macula (Fleck):</b> Farbveränderung im Hautniveau (z.B. Leberfleck, Rötung).</li><li><b>Papula (Knötchen):</b> Kleine, tastbare Erhabenheit (< 1 cm, z.B. bei Akne).</li><li><b>Nodus (Knoten):</b> Größere, tiefere Erhabenheit (> 1 cm).</li><li><b>Urtica (Quaddel):</b> Flüchtige, blassrote, juckende Erhabenheit durch Ödem in der Dermis (typisch für Nesselsucht).</li><li><b>Vesicula (Bläschen):</b> Kleiner, mit Flüssigkeit gefüllter Hohlraum (< 1 cm, z.B. Herpesbläschen).</li><li><b>Bulla (Blase):</b> Großer, mit Flüssigkeit gefüllter Hohlraum (> 1 cm, z.B. Brandblase).</li><li><b>Pustula (Pustel):</b> Mit Eiter gefülltes Bläschen.</li></ul>"
+            },
+            {
+                question: "Wie heißen die Sekundäreffloreszenzen? (Nennen Sie 3-4)",
+                answer: "Sekundäreffloreszenzen entstehen aus Primäreffloreszenzen oder durch Schädigung der Haut. Beispiele:<br><ul><li><b>Squama (Schuppe):</b> Sichtbare Ablösung von Hornzellen.</li><li><b>Crusta (Kruste):</b> Eingetrocknetes Sekret (Blut, Eiter, Serum).</li><li><b>Erosio (Erosion):</b> Oberflächlicher Substanzdefekt der Epidermis, heilt narbenfrei.</li><li><b>Excoriatio (Exkoriation):</b> Tieferer Substanzdefekt bis in die Dermis (z.B. Kratzspur), kann narbig heilen.</li><li><b>Ulcus (Geschwür):</b> Tiefer Substanzdefekt bis in die Dermis oder Subkutis, heilt mit Narbe.</li><li><b>Cicatrix (Narbe):</b> Ersatzgewebe nach tiefem Substanzdefekt.</li><li><b>Atrophia (Atrophie):</b> Hautverdünnung.</li><li><b>Rhagade/Fissur:</b> Schmaler, spaltförmiger Einriss der Haut.</li></ul>"
+            },
+            {
+                question: "Was versteht man unter Keloid?",
+                answer: "Ein Keloid ist eine überschießende Narbenbildung (Narbenhypertrophie), die über das ursprüngliche Verletzungsgebiet hinauswächst. Es entsteht durch eine übermäßige Produktion von Bindegewebsfasern (Kollagen) während der Wundheilung. Keloide sind oft wulstig, derb, können jucken oder schmerzen und haben eine hohe Rezidivneigung nach Entfernung."
+            },
+            {
+                question: "Welche Ursachen der Akne vulgaris gibt es?",
+                answer: "Die Entstehung von Akne vulgaris ist multifaktoriell:<br>1. <b>Androgeneinfluss:</b> Erhöhte Produktion oder Empfindlichkeit gegenüber männlichen Geschlechtshormonen führt zur Vergrößerung der Talgdrüsen und vermehrter Talgproduktion (Seborrhoe).<br>2. <b>Follikuläre Hyperkeratose:</b> Eine Verhornungsstörung im Ausführungsgang des Haarfollikels führt zur Verstopfung (Bildung von Komedonen/Mitessern).<br>3. <b>Bakterielle Besiedlung:</b> Das Bakterium <i>Propionibacterium acnes</i> (Cutibacterium acnes) vermehrt sich im gestauten Talg.<br>4. <b>Entzündungsreaktion:</b> Stoffwechselprodukte der Bakterien und freie Fettsäuren aus dem Talg lösen Entzündungen aus, die zu Papeln und Pusteln führen."
+            },
+            {
+                question: "Welche klinischen Verlaufsstadien der Akne vulgaris gibt es?",
+                answer: "<ul><li><b>Acne comedonica:</b> Vorherrschen von offenen (schwarzen) und geschlossenen (weißen) Komedonen.</li><li><b>Acne papulopustulosa:</b> Zusätzlich zu Komedonen treten entzündliche Papeln und Pusteln auf.</li><li><b>Acne nodulocystica (oder Acne conglobata als schwerste Form):</b> Zusätzlich tiefe, entzündliche Knoten, Zysten, Abszesse und Fistelgänge, die zu erheblicher Narbenbildung führen können.</li></ul>"
+            },
+            {
+                question: "Welche Auslöser der Rosazea gibt es?",
+                answer: "Die genaue Ursache der Rosazea ist unbekannt, aber verschiedene Faktoren können Schübe auslösen oder verschlimmern:<br><ul><li><b>Genetische Veranlagung</b></li><li><b>Umweltfaktoren:</b> Sonnenlicht (UV-Strahlung), Hitze, Kälte, Wind.</li><li><b>Bestimmte Nahrungsmittel und Getränke:</b> Alkohol (besonders Rotwein), scharfe Gewürze, heiße Getränke (Kaffee, Tee).</li><li><b>Stress und emotionale Faktoren</b></li><li><b>Bestimmte Medikamente</b> (z.B. kortisonhaltige Cremes im Gesicht über längere Zeit)</li><li><b>Demodex-Milben:</b> Eine erhöhte Besiedlung der Haut mit diesen Milben wird diskutiert.</li></ul>"
+            },
+            {
+                question: "Was ist Psoriasis (Schuppenflechte)?",
+                answer: "Psoriasis ist eine chronisch-entzündliche, nicht ansteckende Hauterkrankung, die meist schubweise verläuft. Sie ist gekennzeichnet durch:<br><ul><li><b>Beschleunigte Zellteilung:</b> Keratinozyten der Epidermis vermehren sich stark beschleunigt (in ca. 4-7 Tagen statt 28 Tagen).</li><li><b>Unvollständige Verhornung:</b> Die Zellen reifen nicht vollständig aus.</li><li><b>Entzündungsreaktion:</b> Infiltration von Immunzellen in die Haut.</li></ul>Typische Symptome sind scharf begrenzte, rote, erhabene Hautstellen (Plaques), die mit silbrig-weißen Schuppen bedeckt sind. Häufig betroffene Stellen sind Ellenbogen, Knie, Kopfhaut und Kreuzbeinregion."
+            },
+            {
+                question: "Welche Krankheitsbilder sind mit Depigmentierung assoziiert?",
+                answer: "<ul><li><b>Vitiligo (Weißfleckenkrankheit):</b> Eine erworbene Erkrankung, bei der Melanozyten zerstört werden, was zu scharf begrenzten, weißen Flecken auf der Haut führt. Die Ursache ist oft autoimmun.</li><li><b>Albinismus:</b> Eine angeborene Störung der Melaninsynthese aufgrund eines Gendefekts. Betroffene haben sehr helle Haut, Haare und Augen sowie eine erhöhte Lichtempfindlichkeit.</li><li><b>Postinflammatorische Hypopigmentierung:</b> Nach bestimmten Hautentzündungen oder Verletzungen kann es vorübergehend zu einer Aufhellung der Haut kommen.</li></ul>"
+            },
+            {
+                question: "Was sind Pyodermien?",
+                answer: "Pyodermien sind eitrige Infektionen der Haut und ihrer Anhangsgebilde, die durch Bakterien verursacht werden. Die häufigsten Erreger sind Staphylokokken (insbesondere <i>Staphylococcus aureus</i>) und Streptokokken."
+            },
+            {
+                question: "Was ist ein Furunkel?",
+                answer: "Ein Furunkel ist eine tiefe, eitrige Entzündung eines Haarfollikels und des umliegenden Bindegewebes. Er wird meist durch <i>Staphylococcus aureus</i> verursacht. Ein Furunkel beginnt als schmerzhafter, roter Knoten, der sich mit Eiter füllt und schließlich aufbrechen kann. Mehrere miteinander verschmolzene Furunkel werden als Karbunkel bezeichnet."
+            },
+            {
+                question: "Nennen Sie 3 Viruserkrankungen der Haut!",
+                answer: "1. <b>Warzen (Verrucae):</b> Verursacht durch Humane Papillomviren (HPV). Beispiele: Verrucae vulgares (gewöhnliche Warzen), Verrucae plantares (Dornwarzen).<br>2. <b>Herpes simplex (HSV):</b> Verursacht Fieberbläschen (meist HSV-1 an Lippen) oder Genitalherpes (meist HSV-2).<br>3. <b>Herpes zoster (Gürtelrose):</b> Verursacht durch das Varizella-Zoster-Virus (VZV), das auch Windpocken verursacht. Reaktivierung des Virus führt zu einem schmerzhaften, bläschenförmigen Ausschlag entlang eines Nervensegments."
+            },
+            {
+                question: "Wie kommt es zur Krätze (Scabies)?",
+                answer: "Krätze wird durch die Krätzmilbe (<i>Sarcoptes scabiei var. hominis</i>) verursacht. Die Übertragung erfolgt meist durch engen, längeren Hautkontakt mit einer infizierten Person. Die befruchteten weiblichen Milben graben Gänge in die oberste Hautschicht (Stratum corneum), legen dort ihre Eier ab und hinterlassen Kot. Die Hautveränderungen (Juckreiz, Papeln, Gänge) sind eine Reaktion auf die Milben und ihre Produkte."
+            },
+            {
+                question: "Was ist ein Basaliom (weißer Hautkrebs)?",
+                answer: "Ein Basaliom (Basalzellkarzinom) ist der häufigste bösartige Hauttumor. Er entsteht aus Zellen der Basalschicht der Epidermis oder der äußeren Haarwurzelscheide. Basaliome wachsen lokal destruktiv (zerstörend), metastasieren aber nur extrem selten. Sie treten meist an sonnenexponierten Hautstellen auf. Typisch ist ein hautfarbener bis rötlicher, oft perlmuttartig glänzender Knoten mit Teleangiektasien (erweiterten Äderchen)."
+            },
+            {
+                question: "Was ist ein Melanom (schwarzer Hautkrebs)? Was ist die ABCDE-Regel?",
+                answer: "Ein Melanom ist ein hochgradig bösartiger Tumor, der von den pigmentbildenden Zellen der Haut (Melanozyten) ausgeht. Es ist seltener als das Basaliom, aber gefährlicher, da es frühzeitig zur Metastasierung neigt.<br><b>Die ABCDE-Regel</b> dient der Früherkennung verdächtiger Pigmentmale:<br><ul><li><b>A</b>symmetrie: Ungleichmäßige Form.</li><li><b>B</b>egrenzung: Unregelmäßig, unscharf, ausgefranst.</li><li><b>C</b>olor (Farbe): Uneinheitliche Färbung, mehrere Farbtöne (braun, schwarz, rot, weiß, blau).</li><li><b>D</b>urchmesser: Größer als 5-6 mm oder Größenzunahme.</li><li><b>E</b>rhabenheit/Entwicklung: Neu entstanden, tastbar erhaben oder schnelle Veränderung in Größe, Form, Farbe.</li></ul>"
+            },
+            {
+                question: "Was versteht man unter einem Ekzem?",
+                answer: "Ein Ekzem (Dermatitis) ist eine nicht-infektiöse Entzündungsreaktion der Haut. Es gibt verschiedene Formen und Ursachen. Typische Symptome sind Rötung, Schwellung, Juckreiz, Bläschenbildung, Nässen, Krustenbildung und Schuppung. Ekzeme können akut oder chronisch verlaufen."
+            },
+            {
+                question: "Was ist Neurodermitis (Atopische Dermatitis)?",
+                answer: "Neurodermitis ist eine chronische, schubweise verlaufende Hauterkrankung, die zu den atopischen Erkrankungen zählt (wie Heuschnupfen, allergisches Asthma). Sie ist gekennzeichnet durch eine gestörte Hautbarrierefunktion und eine Überempfindlichkeit des Immunsystems. Typische Symptome sind sehr trockene Haut, starker Juckreiz und Ekzeme, die je nach Alter an unterschiedlichen Körperstellen auftreten (z.B. Beugenekzeme bei Kindern, Gesicht und Hände bei Erwachsenen)."
+            },
+            {
+                question: "Beschreiben Sie einen Nagelpilz (Onychomykose)!",
+                answer: "Onychomykose ist eine Pilzinfektion der Nägel, meist der Zehennägel. Verursacher sind oft Dermatophyten. Die Infektion beginnt häufig am freien Nagelrand oder seitlich und breitet sich langsam aus. Typische Anzeichen sind:<br><ul><li>Verfärbung des Nagels (weißlich, gelblich, bräunlich)</li><li>Verdickung der Nagelplatte</li><li>Brüchigkeit, Brüchigwerden des Nagels</li><li>Ablösung des Nagels vom Nagelbett (Onycholyse)</li><li>Ansammlung von krümeligem Material unter dem Nagel</li></ul>"
+            }
+        ];
+
+        const container = document.getElementById('flashcard-container');
+
+        flashcardsData.forEach(data => {
+            const card = document.createElement('div');
+            card.className = 'flashcard';
+
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'flashcard-question';
+            questionDiv.innerHTML = `<span>${data.question}</span><span class="arrow text-2xl">&# récit;</span>`; // Using right arrow as default
+
+            const answerDiv = document.createElement('div');
+            answerDiv.className = 'flashcard-answer';
+            answerDiv.innerHTML = data.answer;
+
+            card.appendChild(questionDiv);
+            card.appendChild(answerDiv);
+            container.appendChild(card);
+
+            questionDiv.addEventListener('click', () => {
+                const arrow = questionDiv.querySelector('.arrow');
+                questionDiv.classList.toggle('open');
+                answerDiv.classList.toggle('open');
+                arrow.classList.toggle('open');
+                 // Change arrow direction
+                if (arrow.classList.contains('open')) {
+                    arrow.innerHTML = '&#x279C;'; // Pointing down arrow when open (or use another suitable one)
+                } else {
+                    arrow.innerHTML = '&# récit;'; // Pointing right arrow when closed
+                }
+            });
+        });
+    </script>
+</body>
+</html>
