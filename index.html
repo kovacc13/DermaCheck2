@@ -47,6 +47,7 @@
         .arrow {
             transition: transform 0.3s ease-in-out;
             color: #3b82f6; /* Blue arrow */
+            font-size: 1.5rem; /* Adjusted size for the new icon if needed */
         }
         .arrow.open {
             transform: rotate(90deg);
@@ -202,13 +203,14 @@
 
         const container = document.getElementById('flashcard-container');
 
-        flashcardsData.forEach(data => {
+        flashcardsData.forEach((data, index) => { 
             const card = document.createElement('div');
             card.className = 'flashcard';
 
             const questionDiv = document.createElement('div');
             questionDiv.className = 'flashcard-question';
-            questionDiv.innerHTML = `<span>${data.question}</span><span class="arrow text-2xl">&# récit;</span>`; // Using right arrow as default
+            // Updated arrow symbol to a chevron that will rotate
+            questionDiv.innerHTML = `<span>${index + 1}. ${data.question}</span><span class="arrow text-2xl">&#x276F;</span>`; // Using ❯ (HEAVY RIGHT-POINTING ANGLE QUOTATION MARK ORNAMENT)
 
             const answerDiv = document.createElement('div');
             answerDiv.className = 'flashcard-answer';
@@ -223,12 +225,8 @@
                 questionDiv.classList.toggle('open');
                 answerDiv.classList.toggle('open');
                 arrow.classList.toggle('open');
-                 // Change arrow direction
-                if (arrow.classList.contains('open')) {
-                    arrow.innerHTML = '&#x279C;'; // Pointing down arrow when open (or use another suitable one)
-                } else {
-                    arrow.innerHTML = '&# récit;'; // Pointing right arrow when closed
-                }
+                // The innerHTML of the arrow no longer needs to be changed here,
+                // as the rotation is handled by CSS on the single symbol.
             });
         });
     </script>
